@@ -1,6 +1,6 @@
-﻿namespace NZWalksApi.Models
+﻿namespace NZWalksApi.Models.Dtos
 {
-    public class Region:BaseEntity
+    public class AddRegionRequest
     {
         public string Code { get; set; }
         public string Name { get; set; }
@@ -8,6 +8,5 @@
         public double Lat { get; set; }
         public double Long { get; set; }
         public long Population { get; set; }
-        public IList<Walk> Walks { get; set; } = new List<Walk>();
     }
 }

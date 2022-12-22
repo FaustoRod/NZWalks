@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using NZWalksApi.Dtos;
 using NZWalksApi.Models;
+using NZWalksApi.Models.Dtos;
 
 namespace NZWalksApi.Profiles
 {
@@ -9,6 +9,7 @@ namespace NZWalksApi.Profiles
         public RegionProfile()
         {
             CreateMap<Region, RegionDto>();
+            CreateMap<AddRegionRequest, Region>();
         }
     }
 }

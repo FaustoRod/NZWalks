@@ -1,12 +1,14 @@
-﻿namespace NZWalksApi.Services.Interfaces
+﻿using NZWalksApi.Models;
+
+namespace NZWalksApi.Services.Interfaces
 {
     public interface IBaseService<T>
+    where T : BaseEntity
     {
-        IEnumerable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
-        bool Add(T region);
-        bool Update(T region);
-        bool Delete(Guid Id);
-        T GetById(Guid Id);
+        Task<T> AddAsync(T model);
+        Task<T> UpdateAsync(Guid id,T model);
+        Task<T> DeleteAsync(Guid Id);
+        Task<T> GetByIdAsync(Guid Id);
     }
 }

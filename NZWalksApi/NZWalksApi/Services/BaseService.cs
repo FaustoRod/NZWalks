@@ -1,36 +1,47 @@
-﻿using NZWalksApi.Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using NZWalksApi.DbContext;
+using NZWalksApi.Models;
+using NZWalksApi.Services.Interfaces;
 
 namespace NZWalksApi.Services
 {
-    public class BaseService<T> : IBaseService<T>
+    public abstract class BaseService<T> : IBaseService<T>
+        where T : BaseEntity
     {
-        public BaseService()
-        {
+        private readonly NzWalksDbContext __dbContext;
 
-        }
-        public bool Add(T region)
+        public BaseService(NzWalksDbContext dbContext)
         {
-            throw new NotImplementedException();
+            __dbContext = dbContext;
         }
 
-        public bool Delete(Guid Id)
+        public async Task<T> AddAsync(T model)
         {
-            throw new NotImplementedException();
+            model.Id = Guid.NewGuid();
+            await __dbContext.Set<T>().AddAsync(model);await __dbContext.SaveChangesAsync();
+            return model;
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<T> DeleteAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            var model = await GetByIdAsync(Id);
+
+            if (model is null) return null;
+
+            __dbContext.Set<T>().Remove(model);
+            await __dbContext.SaveChangesAsync();
+            return model;
         }
 
-        public T GetById(Guid Id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<T>> GetAllAsync()=> await __dbContext.Set<T>().ToListAsync();
 
-        public bool Update(T region)
+        public async Task<T> GetByIdAsync(Guid Id) => await __dbContext.Set<T>().FindAsync(Id);
+
+        public virtual async Task<T> UpdateAsync(Guid id,T model)
         {
-            throw new NotImplementedException();
+            __dbContext.Set<T>().Update(model);
+            await __dbContext.SaveChangesAsync();
+            return model;
         }
     }
 }

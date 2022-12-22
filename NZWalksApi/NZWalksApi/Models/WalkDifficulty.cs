@@ -1,8 +1,7 @@
 ﻿namespace NZWalksApi.Models
 {
-    public class WalkDifficulty
+    public class WalkDifficulty:BaseEntity
     {
-        public Guid Id { get; set; }
         public string Code { get; set; }
 
     }
