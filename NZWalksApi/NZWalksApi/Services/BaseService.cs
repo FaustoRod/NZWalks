@@ -33,9 +33,9 @@ namespace NZWalksApi.Services
             return model;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()=> await __dbContext.Set<T>().ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetAllAsync()=> await __dbContext.Set<T>().ToListAsync();
 
-        public async Task<T> GetByIdAsync(Guid Id) => await __dbContext.Set<T>().FindAsync(Id);
+        public virtual async Task<T> GetByIdAsync(Guid Id) => await __dbContext.Set<T>().FindAsync(Id);
 
         public virtual async Task<T> UpdateAsync(Guid id,T model)
         {
