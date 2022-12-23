@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NZWalksApi.Models;
 using NZWalksApi.Models.Dtos;
@@ -8,6 +9,7 @@ namespace NZWalksApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class RegionController : ControllerBase
     {
         private readonly IRegionService _regionService;
@@ -45,8 +47,11 @@ namespace NZWalksApi.Controllers
 
         [HttpPost]
         [ActionName("AddRegionAsync")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddRegionAsync(AddRegionRequest regionRequest)
         {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            //if (!ValidateAddRegionAsync(regionRequest)) return BadRequest(ModelState);
             var region = _mapper.Map<Region>(regionRequest);
 
             var result = await _regionService.AddAsync(region);
@@ -70,5 +75,43 @@ namespace NZWalksApi.Controllers
             var result = await _regionService.UpdateAsync(id, region);
             return result is not null ? Ok(result) : NotFound();
         }
+
+        #region Private Methods
+        private bool ValidateAddRegionAsync(AddRegionRequest regionRequest)
+        {
+            if(regionRequest is null)
+            {
+                ModelState.AddModelError(nameof(regionRequest), $"{nameof(regionRequest)} cannot be null");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(regionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(regionRequest.Code), $"{nameof(regionRequest.Code)} cannot be null");
+            }
+
+            if (string.IsNullOrWhiteSpace(regionRequest.Name))
+            {
+                ModelState.AddModelError(nameof(regionRequest.Name), $"{nameof(regionRequest.Name)} cannot be null");
+            }
+
+            if(regionRequest.Long < 0)
+            {
+                ModelState.AddModelError(nameof(regionRequest.Long), $"{nameof(regionRequest.Long)} must be > 0");
+            }
+
+            if(regionRequest.Lat < 0)
+            {
+                ModelState.AddModelError(nameof(regionRequest.Lat), $"{nameof(regionRequest.Lat)} must be > 0");
+            }
+
+            if(regionRequest.Population < 0)
+            {
+                ModelState.AddModelError(nameof(regionRequest.Population), $"{nameof(regionRequest.Population)} must be > 0");
+            }
+
+            return ModelState.ErrorCount.Equals(0);
+        }
+        #endregion
     }
 }
