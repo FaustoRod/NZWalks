@@ -10,6 +10,7 @@ namespace NZWalksApi.Configuration
         {
             services.AddTransient<IRegionService, RegionService>();
             services.AddTransient<IWalkService, WalkService>();
+            services.AddTransient<IWalkDifficultyService, WalkDifficultyService>();
         }
     }
 }
